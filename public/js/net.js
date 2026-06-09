@@ -1,6 +1,20 @@
 let socket = null;
 const listeners = new Map();
 
+const FORWARD = [
+  "searching",
+  "searchCancelled",
+  "matchFound",
+  "opponentLeft",
+  "gameStart",
+  "countdown",
+  "cardRevealed",
+  "matchAvailable",
+  "claimResult",
+  "penalty",
+  "gameOver"
+];
+
 function loadScript(src) {
   return new Promise((resolve, reject) => {
     const s = document.createElement("script");
@@ -18,11 +32,7 @@ export async function connect() {
     socket = window.io({ transports: ["websocket", "polling"] });
     socket.on("connect", () => emit("status", "online"));
     socket.on("disconnect", () => emit("status", "offline"));
-    socket.on("searching", () => emit("searching"));
-    socket.on("searchCancelled", () => emit("searchCancelled"));
-    socket.on("matchFound", (d) => emit("matchFound", d));
-    socket.on("opponentLeft", () => emit("opponentLeft"));
-    socket.on("gameAction", (d) => emit("gameAction", d));
+    for (const ev of FORWARD) socket.on(ev, (d) => emit(ev, d));
     return socket;
   } catch (err) {
     emit("status", "offline");
@@ -40,16 +50,32 @@ function emit(event, data) {
   if (set) set.forEach((cb) => cb(data));
 }
 
+function send(event, payload) {
+  if (socket && socket.connected) socket.emit(event, payload);
+}
+
 export function findMatch(profile) {
-  if (socket && socket.connected) socket.emit("findMatch", profile);
+  send("findMatch", profile);
 }
 
 export function cancelMatch() {
-  if (socket && socket.connected) socket.emit("cancelMatch");
+  send("cancelMatch");
 }
 
-export function sendAction(payload) {
-  if (socket && socket.connected) socket.emit("gameAction", payload);
+export function ready() {
+  send("ready");
+}
+
+export function claim() {
+  send("claim");
+}
+
+export function leaveGame() {
+  send("leaveGame");
+}
+
+export function myId() {
+  return socket ? socket.id : null;
 }
 
 export function isOnline() {

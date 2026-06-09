@@ -233,6 +233,11 @@ export class MenuScene {
     loop();
   }
 
+  stop() {
+    if (this.frame) cancelAnimationFrame(this.frame);
+    this.frame = null;
+  }
+
   _update() {
     const t = this.clock.getElapsedTime();
 

@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { Game } from "./game.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,38 +20,39 @@ const publicDir = join(__dirname, "..", "public");
 app.use(express.static(publicDir));
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok", queue: queue.length, rooms: rooms.size });
+  res.json({ status: "ok", queue: queue.length, games: games.size });
 });
 
 let queue = [];
-const rooms = new Map();
+const games = new Map();
 
 function removeFromQueue(id) {
-  queue = queue.filter((p) => p.id !== id);
+  queue = queue.filter((s) => s.id !== id);
 }
 
-function createRoom(a, b) {
+function createMatch(a, b) {
   const roomId = "room_" + Math.random().toString(36).slice(2, 9);
-  rooms.set(roomId, { id: roomId, players: [a.id, b.id], turn: a.id });
-
   a.join(roomId);
   b.join(roomId);
-
   a.data.roomId = roomId;
   b.data.roomId = roomId;
 
-  a.emit("matchFound", { roomId, you: a.id, opponent: b.id, first: true });
-  b.emit("matchFound", { roomId, you: b.id, opponent: a.id, first: false });
+  const game = new Game(io, roomId);
+  game.addPlayer(a.id);
+  game.addPlayer(b.id);
+  games.set(roomId, game);
+
+  a.emit("matchFound", { roomId, you: a.id, opponent: b.id, opponentName: b.data.name });
+  b.emit("matchFound", { roomId, you: b.id, opponent: a.id, opponentName: a.data.name });
 }
 
 io.on("connection", (socket) => {
   socket.on("findMatch", (profile = {}) => {
     socket.data.name = profile.name || "Jugador";
     removeFromQueue(socket.id);
-
     if (queue.length > 0) {
       const opponent = queue.shift();
-      createRoom(opponent, socket);
+      createMatch(opponent, socket);
     } else {
       queue.push(socket);
       socket.emit("searching");
@@ -62,18 +64,36 @@ io.on("connection", (socket) => {
     socket.emit("searchCancelled");
   });
 
-  socket.on("gameAction", (payload) => {
+  socket.on("ready", () => {
+    const game = games.get(socket.data.roomId);
+    if (game) game.markReady(socket.id);
+  });
+
+  socket.on("claim", () => {
+    const game = games.get(socket.data.roomId);
+    if (game) game.claim(socket.id);
+  });
+
+  socket.on("leaveGame", () => {
     const roomId = socket.data.roomId;
-    if (!roomId) return;
-    socket.to(roomId).emit("gameAction", payload);
+    const game = games.get(roomId);
+    if (game) {
+      game.stop();
+      socket.to(roomId).emit("opponentLeft");
+      games.delete(roomId);
+    }
+    socket.leave(roomId);
+    socket.data.roomId = null;
   });
 
   socket.on("disconnect", () => {
     removeFromQueue(socket.id);
     const roomId = socket.data.roomId;
-    if (roomId && rooms.has(roomId)) {
+    const game = games.get(roomId);
+    if (game) {
+      game.stop();
       socket.to(roomId).emit("opponentLeft");
-      rooms.delete(roomId);
+      games.delete(roomId);
     }
   });
 });

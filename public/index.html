@@ -24,7 +24,7 @@
     </header>
 
     <nav class="menu" id="mainMenu">
-      <button class="btn btn-primary" data-action="play">JUGAR</button>
+      <button class="btn btn-primary" data-action="play">MULTIJUGADOR</button>
       <button class="btn" data-action="howto">CÓMO JUGAR</button>
       <button class="btn" data-action="credits">CRÉDITOS</button>
     </nav>
@@ -42,6 +42,38 @@
     </div>
 
     <footer class="status" id="status">Conectando...</footer>
+  </div>
+
+  <div id="gameUI" class="game-ui hidden">
+    <div class="scoreboard">
+      <div class="score-card you">
+        <span class="score-name">TÚ</span>
+        <span class="score-pairs" id="scoreYou">0</span>
+      </div>
+      <div class="score-mid">
+        <span class="score-target" id="scoreTarget">Pares para ganar: 4</span>
+        <span class="score-vs">VS</span>
+      </div>
+      <div class="score-card opp">
+        <span class="score-name" id="oppName">RIVAL</span>
+        <span class="score-pairs" id="scoreOpp">0</span>
+      </div>
+    </div>
+
+    <div class="toast hidden" id="toast"></div>
+
+    <button class="take-btn" id="takeBtn" data-action="take">TOMAR</button>
+  </div>
+
+  <div id="countdown" class="countdown hidden"><span id="countNum">3</span></div>
+
+  <div id="resultScreen" class="result hidden">
+    <h2 id="resultTitle">Resultado</h2>
+    <p id="resultDetail"></p>
+    <div class="result-actions">
+      <button class="btn btn-primary" data-action="rematch">BUSCAR OTRA</button>
+      <button class="btn btn-ghost" data-action="toMenu">MENÚ</button>
+    </div>
   </div>
 
   <script type="module" src="js/main.js"></script>
