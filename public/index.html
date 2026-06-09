@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dino Bey - Card Battle</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="scene"></canvas>
+
+  <div id="ui" class="ui">
+    <header class="brand">
+      <h1 class="title">DINO BEY</h1>
+      <p class="subtitle">Card Battle</p>
+    </header>
+
+    <nav class="menu" id="mainMenu">
+      <button class="btn btn-primary" data-action="play">JUGAR</button>
+      <button class="btn" data-action="howto">CÓMO JUGAR</button>
+      <button class="btn" data-action="credits">CRÉDITOS</button>
+    </nav>
+
+    <div class="panel hidden" id="searchPanel">
+      <div class="spinner"></div>
+      <p class="panel-text" id="searchText">Buscando oponente...</p>
+      <button class="btn btn-ghost" data-action="cancel">CANCELAR</button>
+    </div>
+
+    <div class="panel hidden" id="infoPanel">
+      <h2 id="infoTitle">Título</h2>
+      <p id="infoBody">Contenido</p>
+      <button class="btn btn-ghost" data-action="back">VOLVER</button>
+    </div>
+
+    <footer class="status" id="status">Conectando...</footer>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
