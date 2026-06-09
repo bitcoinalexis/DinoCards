@@ -1,4 +1,4 @@
-const TYPES = ["red", "blue", "b", "white", "bu", "wo"];
+const TYPES = ["red", "blue", "b", "white", "bu", "wo", "cchong", "cvue", "rno"];
 
 const DIFFICULTY = {
   facil: [950, 1900],

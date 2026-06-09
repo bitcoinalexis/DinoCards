@@ -1,6 +1,7 @@
 import { MenuScene } from "./menu.js";
 import { GameScene } from "./game.js";
 import { LocalGame } from "./localGame.js";
+import * as audio from "./audio.js";
 import * as net from "./net.js";
 
 const canvas = document.getElementById("scene");
@@ -147,6 +148,7 @@ const gameHandlers = {
     }
   },
   cardRevealed(d) {
+    audio.play("cardFlip");
     if (game) game.addCard(d.card, d.index);
   },
   matchAvailable(d) {
@@ -182,6 +184,7 @@ const gameHandlers = {
 };
 
 document.body.addEventListener("click", (e) => {
+  audio.initAudio();
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
   const action = btn.dataset.action;

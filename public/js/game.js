@@ -6,7 +6,10 @@ const CARD_IMG = {
   b: "assets/cards/b.png",
   white: "assets/cards/white.png",
   bu: "assets/cards/bu.png",
-  wo: "assets/cards/wo.png"
+  wo: "assets/cards/wo.png",
+  cchong: "assets/cards/cchong.png",
+  cvue: "assets/cards/cvue.png",
+  rno: "assets/cards/rno.png"
 };
 
 const CARD_W = 1.15;
