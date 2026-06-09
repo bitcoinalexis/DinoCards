@@ -25,9 +25,20 @@
 
     <nav class="menu" id="mainMenu">
       <button class="btn btn-primary" data-action="play">MULTIJUGADOR</button>
+      <button class="btn" data-action="vsAI">VS IA</button>
       <button class="btn" data-action="howto">CÓMO JUGAR</button>
       <button class="btn" data-action="credits">CRÉDITOS</button>
     </nav>
+
+    <div class="panel hidden" id="difficultyPanel">
+      <h2>Elige dificultad</h2>
+      <div class="diff-options">
+        <button class="btn" data-action="startAI" data-diff="facil">FÁCIL</button>
+        <button class="btn" data-action="startAI" data-diff="normal">NORMAL</button>
+        <button class="btn" data-action="startAI" data-diff="dificil">DIFÍCIL</button>
+      </div>
+      <button class="btn btn-ghost" data-action="back">VOLVER</button>
+    </div>
 
     <div class="panel hidden" id="searchPanel">
       <div class="spinner"></div>

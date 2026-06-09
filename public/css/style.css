@@ -146,6 +146,13 @@ html, body {
   opacity: 0.92;
 }
 
+.diff-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
 .spinner {
   width: 54px;
   height: 54px;
